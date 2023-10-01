@@ -1,0 +1,49 @@
+I see alot answers without explanation like someone 5lb for 1000 streams ? what kind servers ? 10gbps ? 20gpbs ?
+
+
+Main server should be the strongest (with hardwares, CPU, RAM,) First because Xtream-ui is mounted in Ram its not installed on HDD
+plus you have there mysql, crons.. and thats why its not good to stream and use panel on same server.
+
+like someone told you , you should have min. 2 servers 1 main 1 LB ( Loadbalancer) LB should have ofcourse CPU & RAM good but most needed is bandwith because you streaming from LB and you need bandwith . most CPU and RAM takes channels that is DOWN because server (panel) non-stop trying to start stream + logs
+
+if you have RAM issue and its not logical (mean you dont know why and should not be HIGH)
+
+try this
+
+nano /etc/sysctl.conf
+search for vm.happiness if it does not exists
+
+
+add the line at the bottom !
+
+Code:
+vm.happiness=100
+( lower the value untill it fits your needings )
+
+then
+Bash:
+sudo sysctl --load=/etc/sysctl.conf
+
+
+Bash:
+apt-get install libjemalloc1
+service mysql restart
+
+Step 1.
+Bash:
+nano /etc/mysql/my.cnf
+
+Code:
+malloc-lib=/usr/lib64/libjemalloc.so.1
+
+step 2. (add line enviroment)
+
+Bash:
+nano /lib/systemd/system/mysql.service
+Bash:
+Environment=/usr/lib/x86_64-linux-gnu/libjemalloc.so.1
+
+Step 3.
+now just restart mysql service with:
+Bash:
+service mysql restart
